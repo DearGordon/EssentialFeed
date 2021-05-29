@@ -8,25 +8,28 @@
 import XCTest
 @testable import EssentialFeed
 
-class HTTPClient {
-
-    static var shared = HTTPClient() //make singleton assignable, but it will not be a real singleton, cause it's mutable
-
-    func get(form url: URL) {}
+protocol HTTPClient {
+    func get(form url: URL)
 }
 
 class HTTPClientSpy: HTTPClient {
     var requestURL: URL?
 
-    override func get(form url: URL) {
+    func get(form url: URL) {
         requestURL = url
     }
 }
 
 class RemoteFeedLoader {
 
+    let client: HTTPClient
+
+    init(client: HTTPClient) {
+        self.client = client
+    }
+
     func load() {
-        HTTPClient.shared.get(form: URL(string: "https://google.com")!)
+        client.get(form: URL(string: "https://google.com")!)
     }
 }
 
@@ -35,16 +38,14 @@ class RemoteFeedLoaderTest: XCTestCase {
 
     func testInitDoesNotRequestDataFromURL() {
         let clientSpy = HTTPClientSpy()
-        HTTPClient.shared = clientSpy
-        _ = RemoteFeedLoader()
+        _ = RemoteFeedLoader(client: clientSpy)
 
         XCTAssertNil(clientSpy.requestURL)
     }
 
     func testLoadRequestDataFromURL() {
         let clientSpy = HTTPClientSpy()
-        HTTPClient.shared = clientSpy
-        let loader = RemoteFeedLoader()
+        let loader = RemoteFeedLoader(client: clientSpy)
         loader.load()
 
         XCTAssertNotNil(clientSpy.requestURL)
