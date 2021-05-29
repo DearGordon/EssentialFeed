@@ -23,7 +23,7 @@ class RemoteFeedLoaderTest: XCTestCase {
         let url = URL(string: "https://yahoo.com.tw")!
 
         let (loader, client) = makeSUT(url: url)
-        loader.load()
+        loader.load(completion: { _ in })
 
         XCTAssertEqual(client.requestURLs, [url])
     }
@@ -31,8 +31,8 @@ class RemoteFeedLoaderTest: XCTestCase {
     func testCallRequestTwice() {
         let url = URL(string: "https://yahoo.com.tw")!
         let (loader, client) = makeSUT(url: url)
-        loader.load()
-        loader.load()
+        loader.load(completion: { _ in })
+        loader.load(completion: { _ in })
         //make an array so we can check load count and load url
         XCTAssertEqual(client.requestURLs, [url, url])
     }
