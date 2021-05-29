@@ -52,19 +52,23 @@ class RemoteFeedLoaderTest: XCTestCase {
 
     func test_load_deliversErrorOnNon200HTTPResponse() {
         let (loader, client) = makeSUT()
-        var captureErrors: [RemoteFeedLoader.Error] = []
-        loader.load { (result) in
-            switch result {
-            case .success(_):
-                XCTFail()
-            case .failure(let error):
-                captureErrors.append(error)
+
+        let sample = [199, 201, 300, 400, 500]
+            sample.enumerated().forEach { (index, code) in
+            var captureErrors: [RemoteFeedLoader.Error] = []
+
+            loader.load { (result) in
+                switch result {
+                case .success(_):
+                    XCTFail()
+                case .failure(let error):
+                    captureErrors.append(error)
+                }
             }
+
+            client.complete(withStatusCode: code, at: index)
+            XCTAssertEqual(captureErrors, [.invalidData])
         }
-
-        client.complete(withStatusCode: 400)
-
-        XCTAssertEqual(captureErrors, [.invalidData])
     }
 
     //MARK: - Helper
