@@ -8,6 +8,9 @@
 import XCTest
 import EssentialFeed
 
+typealias SuccessItem = (Data, HTTPURLResponse)
+typealias Message = (url: URL, completion: (Result<SuccessItem, Error>) -> Void)
+
 class RemoteFeedLoaderTest: XCTestCase {
 
     func test_Init_DoesNotRequestDataFromURL() {
@@ -52,9 +55,9 @@ class RemoteFeedLoaderTest: XCTestCase {
 
     func test_load_deliversErrorOnNon200HTTPResponse() {
         let (loader, client) = makeSUT()
-
         let sample = [199, 201, 300, 400, 500]
-            sample.enumerated().forEach { (index, code) in
+
+        sample.enumerated().forEach { (index, code) in
             var captureErrors: [RemoteFeedLoader.Error] = []
 
             loader.load { (result) in
@@ -71,22 +74,40 @@ class RemoteFeedLoaderTest: XCTestCase {
         }
     }
 
+    func test_load_deliversErrorOn200HTTPResponseWithInvalidJSON() {
+        let (loader, client) = makeSUT()
+
+        var captureError: [RemoteFeedLoader.Error] = []
+        loader.load { (result) in
+            switch result {
+            case .success(_):
+                XCTFail()
+            case .failure(let error):
+                captureError.append(error)
+            }
+        }
+
+        let invalidJSON = Data()
+        client.complete(withStatusCode: 200, data: invalidJSON)
+        XCTAssertEqual(captureError, [.invalidData])
+    }
+
     //MARK: - Helper
     private func makeSUT(url: URL = URL(string: "http://google.com")!) -> (sut: RemoteFeedLoader, client: HTTPClientSpy) {
+
         let client = HTTPClientSpy()
-        return (RemoteFeedLoader(url: url, client: client), client)
+        let loader = RemoteFeedLoader(url: url, client: client)
+        return (loader, client)
     }
 
     private class HTTPClientSpy: HTTPClient {
-
-        private var messages = [(url: URL,
-                                completion: (Result<HTTPURLResponse, Error>) -> Void)]()
+        private var messages: [Message] = []
 
         var requestURLs: [URL] {
             return messages.map{ $0.url }
         }
 
-        func get(form url: URL, completion: @escaping ((Result<HTTPURLResponse, Error>) -> Void)) {
+        func get(form url: URL, completion: @escaping ((Result<SuccessItem, Error>) -> Void)) {
             messages.append((url, completion))
         }
 
@@ -94,13 +115,13 @@ class RemoteFeedLoaderTest: XCTestCase {
             messages[index].completion(.failure(error))
         }
 
-        func complete(withStatusCode code: Int, at index: Int = 0) {
+        func complete(withStatusCode code: Int, data: Data = Data(), at index: Int = 0) {
             let response = HTTPURLResponse(url: messages[index].url,
                                            statusCode: code,
                                            httpVersion: nil,
-                                           headerFields: nil)
+                                           headerFields: nil)!
 
-            messages[index].completion(.success(response!))
+            messages[index].completion(.success((data, response)))
         }
     }
 }
