@@ -10,14 +10,15 @@ import EssentialFeed
 
 class RemoteFeedLoaderTest: XCTestCase {
 
-    func testInitDoesNotRequestDataFromURL() {
+    func test_Init_DoesNotRequestDataFromURL() {
 
         let (_, client) = makeSUT()
 
         XCTAssertNil(client.requestURL)
     }
 
-    func testLoadRequestDataFromURL() {
+    //test load, behaviours is requests data from URL.
+    func test_Load_RequestsDataFromURL() {
         //check which url we are loading data from
         let url = URL(string: "https://yahoo.com.tw")!
 
