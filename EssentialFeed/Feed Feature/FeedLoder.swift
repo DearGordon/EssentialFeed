@@ -7,13 +7,4 @@
 
 import Foundation
 
-protocol FeedLoader {
-    func load(completion: (Result<FeedItem, Error>) -> Void)
-}
 
-class RemoteFeedLoader: FeedLoader {
-
-    func load(completion: (Result<FeedItem, Error>) -> Void) {
-
-    }
-}

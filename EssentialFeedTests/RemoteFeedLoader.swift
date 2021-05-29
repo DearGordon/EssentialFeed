@@ -9,7 +9,19 @@ import XCTest
 @testable import EssentialFeed
 
 class HTTPClient {
+
+    static let shared = HTTPClient()
+
+    private init() {}
+
     var url: URL?
+}
+
+class RemoteFeedLoader {
+
+    func load() {
+        HTTPClient.shared.url = URL(string: "https://google.com")
+    }
 }
 
 class RemoteFeedLoaderTest: XCTestCase {
@@ -17,26 +29,20 @@ class RemoteFeedLoaderTest: XCTestCase {
 
     func testInit() {
         _ = RemoteFeedLoader()
-        let client = HTTPClient()
+        let client = HTTPClient.shared
 
         XCTAssertNil(client.url)
     }
 
     func testLoadRequestDataFromURL() {
-        let client = HTTPClient()
+        let client = HTTPClient.shared
 
         //three different way of dependancy injection
         //instruction injection, property injection, functional injection
         let loader = RemoteFeedLoader()
-        loader.load { (result) in
-            switch result {
-            case .success(let data):
-                XCTAssertNotNil(data)
-            case .failure(_):
-                XCTFail()
-            }
-        }
-        XCTFail()
+        loader.load()
+
+        XCTAssertNotNil(client.url)
     }
 
 }
