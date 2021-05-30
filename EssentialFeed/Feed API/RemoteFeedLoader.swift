@@ -11,7 +11,7 @@ public protocol HTTPClient {
     func get(form url: URL, completion: @escaping ((Result<SuccessItem, Error>) -> Void))
 }
 
-public typealias SuccessItem = (data: Data?, response: HTTPURLResponse)
+public typealias SuccessItem = (data: Data, response: HTTPURLResponse)
 
 public final class RemoteFeedLoader {
 
@@ -35,8 +35,8 @@ public final class RemoteFeedLoader {
             switch result {
             case .success(let successItem):
 
-                if let item = successItem.data,
-                   let root = try? JSONDecoder().decode(Root.self, from: item) {
+                if successItem.response.statusCode == 200,
+                   let root = try? JSONDecoder().decode(Root.self, from: successItem.data) {
                     completion(.success(root.items))
                 } else {
                     completion(.failure(.invalidData))
