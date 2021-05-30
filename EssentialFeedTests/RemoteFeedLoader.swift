@@ -71,7 +71,19 @@ class RemoteFeedLoaderTest: XCTestCase {
             let emptyListJSON = "{\"item\": []}".data(using: .utf8)
             client.complete(withStatusCode: 200, data: emptyListJSON)
         }
+    }
 
+    func test_load_deliversItemsOn200HTTPResponseWithJSONItem() {
+        let (loader, client) = makeSUT()
+        let item1 = makeItem(id: UUID(), imageURL: URL(string: "http://google.com")!)
+        let item2 = makeItem(id: UUID(), imageURL: URL(string: "http://yahoo.com.tw")!)
+
+        let items = [item1.model, item2.model]
+
+        expect(loader, toCompleteWithResult: [.success(items)]) {
+            let json = makeItemsJSON([item1.json, item2.json])
+            client.complete(withStatusCode: 200, data: json)
+        }
     }
 
     //MARK: - Helper
@@ -80,6 +92,33 @@ class RemoteFeedLoaderTest: XCTestCase {
         let client = HTTPClientSpy()
         let loader = RemoteFeedLoader(url: url, client: client)
         return (loader, client)
+    }
+
+    private func makeItem(id: UUID,
+                          description: String? = nil,
+                          location: String? = nil,
+                          imageURL: URL) -> (model: FeedItem, json: [String: Any]) {
+
+        let item = FeedItem(id: id,
+                            description: description,
+                            location: location,
+                            imageURL: imageURL)
+
+        let json: [String : Any] = ["id": id.uuidString,
+                                    "description": description,
+                                    "location": location,
+                                    "image": imageURL.absoluteString
+        ].reduce(into: [String: Any]()) { (newDict, element) in
+            //if there is nil in value, we don't add the key of that value into json
+            if let value = element.value { newDict[element.key] = value }
+        }
+
+        return (item, json)
+    }
+
+    private func makeItemsJSON(_ items: [[String: Any]]) -> Data {
+        let json = ["items": items]
+        return try! JSONSerialization.data(withJSONObject: json)
     }
 
     private func expect(_ loader: RemoteFeedLoader,
