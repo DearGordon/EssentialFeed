@@ -37,7 +37,7 @@ public final class RemoteFeedLoader {
 
                 if successItem.response.statusCode == 200,
                    let root = try? JSONDecoder().decode(Root.self, from: successItem.data) {
-                    completion(.success(root.items))
+                    completion(.success(root.items.map({ $0.item })))
                 } else {
                     completion(.failure(.invalidData))
                 }
@@ -49,5 +49,20 @@ public final class RemoteFeedLoader {
 }
 
 private struct Root: Codable {
-    let items: [FeedItem]
+    let items: [Item]
+}
+
+//cause we will have feedItem from different source, remote source or local source, so we won't dependancy model on FeedItem itself but on RemoteFeedLoader and LocalFeedLoader seperate, so if server change api's property, will not effect whole FeedItem module
+private struct Item: Codable {
+    let id: UUID
+    let description: String?
+    let location: String?
+    let image: URL
+
+    var item: FeedItem {
+        return FeedItem(id: self.id,
+                        description: self.description,
+                        location: self.location,
+                        imageURL: self.image)
+    }
 }

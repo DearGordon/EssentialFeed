@@ -19,11 +19,4 @@ public struct FeedItem: Codable, Equatable {
         self.location = location
         self.imageURL = imageURL
     }
-
-    private enum CodingKeys: String, CodingKey {
-        case id = "id"
-        case description = "description"
-        case location = "location"
-        case imageURL = "image"
-    }
 }
