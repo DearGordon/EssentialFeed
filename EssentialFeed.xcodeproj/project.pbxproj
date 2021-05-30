@@ -105,8 +105,8 @@
 		5485F3572661F82800AD4E26 /* EssentialFeedTests */ = {
 			isa = PBXGroup;
 			children = (
-				5485F3912661FA1700AD4E26 /* RemoteFeedLoader.swift */,
 				5485F35A2661F82800AD4E26 /* Info.plist */,
+				5485F3912661FA1700AD4E26 /* RemoteFeedLoader.swift */,
 			);
 			path = EssentialFeedTests;
 			sourceTree = "<group>";
