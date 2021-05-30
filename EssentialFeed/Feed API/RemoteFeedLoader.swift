@@ -24,7 +24,8 @@ public final class RemoteFeedLoader {
 
 
     public func load(completion: @escaping ((Result<[FeedItem], RemoteFeedLoader.Error>) -> Void)) {
-        client.get(form: url, completion: { (result) in
+        client.get(form: url, completion: { [weak self] (result) in
+            guard self != nil else { return }   //why we add this line cause if self is nil, this closure will still run to the bottom, and will retain cycle with Static member - FeedItemsMapper
 
             switch result {
             case .success(let successItem):
