@@ -17,6 +17,7 @@
 		5485F38D2661F9F800AD4E26 /* FeedLoder.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5485F38B2661F9F800AD4E26 /* FeedLoder.swift */; };
 		5485F3922661FA1700AD4E26 /* RemoteFeedLoader.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5485F3912661FA1700AD4E26 /* RemoteFeedLoader.swift */; };
 		5485F3A326620FA600AD4E26 /* RemoteFeedLoader.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5485F3A226620FA600AD4E26 /* RemoteFeedLoader.swift */; };
+		5485F3D62663B62000AD4E26 /* HTTPClient.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5485F3D52663B62000AD4E26 /* HTTPClient.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -44,6 +45,7 @@
 		5485F38B2661F9F800AD4E26 /* FeedLoder.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = FeedLoder.swift; sourceTree = "<group>"; };
 		5485F3912661FA1700AD4E26 /* RemoteFeedLoader.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RemoteFeedLoader.swift; sourceTree = "<group>"; };
 		5485F3A226620FA600AD4E26 /* RemoteFeedLoader.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RemoteFeedLoader.swift; sourceTree = "<group>"; };
+		5485F3D52663B62000AD4E26 /* HTTPClient.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HTTPClient.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -120,6 +122,7 @@
 			isa = PBXGroup;
 			children = (
 				5485F3A226620FA600AD4E26 /* RemoteFeedLoader.swift */,
+				5485F3D52663B62000AD4E26 /* HTTPClient.swift */,
 			);
 			path = "Feed API";
 			sourceTree = "<group>";
@@ -227,6 +230,7 @@
 				5485F38C2661F9F800AD4E26 /* FeedItem.swift in Sources */,
 				5485F3462661F82600AD4E26 /* ViewController.swift in Sources */,
 				5485F3422661F82600AD4E26 /* AppDelegate.swift in Sources */,
+				5485F3D62663B62000AD4E26 /* HTTPClient.swift in Sources */,
 				5485F3442661F82600AD4E26 /* SceneDelegate.swift in Sources */,
 				5485F3A326620FA600AD4E26 /* RemoteFeedLoader.swift in Sources */,
 				5485F38D2661F9F800AD4E26 /* FeedLoder.swift in Sources */,
