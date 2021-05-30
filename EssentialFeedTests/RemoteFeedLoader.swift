@@ -8,7 +8,6 @@
 import XCTest
 import EssentialFeed
 
-typealias SuccessItem = (Data, HTTPURLResponse)
 typealias Message = (url: URL, completion: (Result<SuccessItem, Error>) -> Void)
 
 class RemoteFeedLoaderTest: XCTestCase {
@@ -65,6 +64,16 @@ class RemoteFeedLoaderTest: XCTestCase {
         })
     }
 
+    func test_load_deliverNoItemsOn200HTTPResponseWithEmptyJSONList() {
+        let (loader, client) = makeSUT()
+
+        expect(loader, toCompleteWithResult: [.success([])]) {
+            let emptyListJSON = "{\"item\": []}".data(using: .utf8)
+            client.complete(withStatusCode: 200, data: emptyListJSON)
+        }
+
+    }
+
     //MARK: - Helper
     private func makeSUT(url: URL = URL(string: "http://google.com")!) -> (sut: RemoteFeedLoader, client: HTTPClientSpy) {
 
@@ -103,7 +112,7 @@ class RemoteFeedLoaderTest: XCTestCase {
             messages[index].completion(.failure(error))
         }
 
-        func complete(withStatusCode code: Int, data: Data = Data(), at index: Int = 0) {
+        func complete(withStatusCode code: Int, data: Data? = nil, at index: Int = 0) {
             let response = HTTPURLResponse(url: messages[index].url,
                                            statusCode: code,
                                            httpVersion: nil,

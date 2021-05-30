@@ -8,8 +8,10 @@
 import Foundation
 
 public protocol HTTPClient {
-    func get(form url: URL, completion: @escaping ((Result<(Data, HTTPURLResponse), Error>) -> Void))
+    func get(form url: URL, completion: @escaping ((Result<SuccessItem, Error>) -> Void))
 }
+
+public typealias SuccessItem = (data: Data?, response: HTTPURLResponse)
 
 public final class RemoteFeedLoader {
 
@@ -31,12 +33,14 @@ public final class RemoteFeedLoader {
         client.get(form: url, completion: { (result) in
 
             switch result {
-            case .success(_):
-//                if response.statusCode != 200 {
+            case .success(let successItem):
+
+                if let item = successItem.data,
+                   let _ = try? JSONSerialization.jsonObject(with: item) {
+                    completion(.success([]))
+                } else {
                     completion(.failure(.invalidData))
-//                } else {
-//                    completion(.success(nil))
-//                }
+                }
             case .failure(_):
                 completion(.failure(.connectivity))
             }
