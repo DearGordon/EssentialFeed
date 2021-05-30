@@ -27,11 +27,11 @@ public final class RemoteFeedLoader {
     }
 
 
-    public func load(completion: @escaping ((Result<FeedItem?, Error>) -> Void)) {
+    public func load(completion: @escaping ((Result<[FeedItem], RemoteFeedLoader.Error>) -> Void)) {
         client.get(form: url, completion: { (result) in
 
             switch result {
-            case .success(_, let response):
+            case .success(_):
 //                if response.statusCode != 200 {
                     completion(.failure(.invalidData))
 //                } else {

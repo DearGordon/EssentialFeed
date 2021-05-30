@@ -40,7 +40,7 @@ class RemoteFeedLoaderTest: XCTestCase {
     func test_load_deliversErrorOnClientError() {
         let (loader, client) = makeSUT()
 
-        expect(loader, toCompleteWithError: [.connectivity], when: {
+        expect(loader, toCompleteWithResult: [.failure(.connectivity)], when: {
             let clientError = NSError(domain: "Test", code: 0)
             client.complete(with: clientError)
         })
@@ -51,7 +51,7 @@ class RemoteFeedLoaderTest: XCTestCase {
         let sample = [199, 201, 300, 400, 500]
 
         sample.enumerated().forEach { (index, code) in
-            expect(loader, toCompleteWithError: [.invalidData], when: {
+            expect(loader, toCompleteWithResult: [.failure(.invalidData)], when: {
                 client.complete(withStatusCode: code, at: index)
             })
         }
@@ -60,7 +60,7 @@ class RemoteFeedLoaderTest: XCTestCase {
     func test_load_deliversErrorOn200HTTPResponseWithInvalidJSON() {
         let (loader, client) = makeSUT()
 
-        expect(loader, toCompleteWithError: [.invalidData], when: {
+        expect(loader, toCompleteWithResult: [.failure(.invalidData)], when: {
             client.complete(withStatusCode: 200, data: Data())
         })
     }
@@ -74,23 +74,18 @@ class RemoteFeedLoaderTest: XCTestCase {
     }
 
     private func expect(_ loader: RemoteFeedLoader,
-                        toCompleteWithError error: [RemoteFeedLoader.Error],
+                        toCompleteWithResult result: [Result<[FeedItem], RemoteFeedLoader.Error>],
                         when action: () -> Void,
                         file: StaticString = #filePath,
                         line: UInt = #line) {
 
-        var captureError: [RemoteFeedLoader.Error] = []
+        var captureResult: [Result<[FeedItem], RemoteFeedLoader.Error>] = []
 
         loader.load { (result) in
-            switch result {
-            case .success(_):
-                XCTFail()
-            case .failure(let error):
-                captureError.append(error)
-            }
+            captureResult.append(result)
         }
         action()
-        XCTAssertEqual(captureError, error, file: file, line: line)
+        XCTAssertEqual(captureResult, result, file: file, line: line)
     }
 
     private class HTTPClientSpy: HTTPClient {
