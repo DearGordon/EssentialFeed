@@ -11,6 +11,10 @@ internal final class FeedItemsMapper {
 
     private struct Root: Codable {
         let items: [Item]
+
+        var feedItems: [FeedItem] {
+            return self.items.map({ $0.item })
+        }
     }
 
     private struct Item: Codable {
@@ -29,11 +33,11 @@ internal final class FeedItemsMapper {
 
     private static var OK_200: Int = 200
 
-    internal static func map(_ data: Data, _ response: HTTPURLResponse) throws -> [FeedItem] {
-        guard response.statusCode == OK_200 else {
-            throw RemoteFeedLoader.Error.invalidData
+    internal static func map(_ data: Data, from response: HTTPURLResponse) -> Result<[FeedItem], RemoteFeedLoader.Error> {
+        guard response.statusCode == OK_200,
+              let root = try? JSONDecoder().decode(Root.self, from: data) else {
+            return .failure(.invalidData)
         }
-        let root = try JSONDecoder().decode(Root.self, from: data)
-        return root.items.map({ $0.item})
+        return .success(root.feedItems)
     }
 }
