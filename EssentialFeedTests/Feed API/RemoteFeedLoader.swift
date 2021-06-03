@@ -39,7 +39,7 @@ class RemoteFeedLoaderTest: XCTestCase {
     func test_load_deliversErrorOnClientError() {
         let (loader, client) = makeSUT()
 
-        expect(loader, toCompleteWithResult: .failure(RemoteFeedLoader.Error.connectivity), when: {
+        expect(loader, toCompleteWithResult: failure(.connectivity), when: {
             let clientError = NSError(domain: "Test", code: 0)
             client.complete(with: clientError)
         })
@@ -50,7 +50,7 @@ class RemoteFeedLoaderTest: XCTestCase {
         let sample = [199, 201, 300, 400, 500]
 
         sample.enumerated().forEach { (index, code) in
-            expect(loader, toCompleteWithResult: .failure(RemoteFeedLoader.Error.invalidData), when: {
+            expect(loader, toCompleteWithResult: failure(.invalidData), when: {
                 let json = makeItemsJSON([])
                 client.complete(withStatusCode: code, data: json, at: index)
             })
@@ -60,7 +60,7 @@ class RemoteFeedLoaderTest: XCTestCase {
     func test_load_deliversErrorOn200HTTPResponseWithInvalidJSON() {
         let (loader, client) = makeSUT()
 
-        expect(loader, toCompleteWithResult: .failure(RemoteFeedLoader.Error.invalidData), when: {
+        expect(loader, toCompleteWithResult: failure(.invalidData), when: {
             client.complete(withStatusCode: 200, data: Data())
         })
     }
@@ -116,6 +116,10 @@ class RemoteFeedLoaderTest: XCTestCase {
         addTeardownBlock { [weak instance] in
             XCTAssertNil(instance, "instance should have been allocated. Potential memory leak", file: file, line: line)
         }
+    }
+
+    private func failure(_ error: RemoteFeedLoader.Error) -> Result<[FeedItem], Error> {
+        return .failure(error)
     }
 
     private func makeItem(id: UUID,
