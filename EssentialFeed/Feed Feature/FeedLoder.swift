@@ -7,10 +7,6 @@
 
 import Foundation
 
-//public typealias LoadFeedResult = (Result<[FeedItem], Error>)
-
-//extension LoadFeedResult where Error: Equatable {}
-
 public protocol FeedLoader {
     func load(completion: @escaping ((Result<[FeedItem], Error>) -> Void))
 }
