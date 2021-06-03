@@ -22,18 +22,23 @@ public final class RemoteFeedLoader {
         self.url = url
     }
 
+}
 
-    public func load(completion: @escaping ((Result<[FeedItem], RemoteFeedLoader.Error>) -> Void)) {
+extension RemoteFeedLoader: FeedLoader {
+
+    public func load(completion: @escaping ((Result<[FeedItem], Error>) -> Void)) {
         client.get(form: url, completion: { [weak self] (result) in
-            guard self != nil else { return } 
+            guard self != nil else { return }
 
             switch result {
             case .success(let successItem):
                 let result = FeedItemsMapper.map(successItem.data, from: successItem.response)
                 completion(result)
             case .failure(_):
-                completion(.failure(.connectivity))
+                completion(.failure(Error.connectivity))
             }
         })
     }
+
+
 }
