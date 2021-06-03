@@ -12,7 +12,6 @@ import Foundation
 //extension LoadFeedResult where Error: Equatable {}
 
 public protocol FeedLoader {
-    associatedtype Error: Swift.Error
     func load(completion: @escaping ((Result<[FeedItem], Error>) -> Void))
 }
 

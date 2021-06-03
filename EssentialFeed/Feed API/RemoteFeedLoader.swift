@@ -26,7 +26,7 @@ public final class RemoteFeedLoader {
 
 extension RemoteFeedLoader: FeedLoader {
 
-    public func load(completion: @escaping ((Result<[FeedItem], Error>) -> Void)) {
+    public func load(completion: @escaping ((Result<[FeedItem], Swift.Error>) -> Void)) {
         client.get(form: url, completion: { [weak self] (result) in
             guard self != nil else { return }
 
