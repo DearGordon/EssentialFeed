@@ -8,7 +8,8 @@
 import XCTest
 import EssentialFeed
 
-class URLSessionHTTPClient {
+class URLSessionHTTPClient: HTTPClient {
+
     private let session: URLSession
 
     init(session: URLSession = .shared) {
@@ -17,7 +18,7 @@ class URLSessionHTTPClient {
 
     struct UnexpectedValueRepresentation: Error {}
 
-    func get(from url: URL, completion: @escaping (Result<(Data, URLResponse?), Error>) -> Void) {
+    func get(from url: URL, completion: @escaping (Result<(Data, HTTPURLResponse), Error>) -> Void) {
         self.session.dataTask(with: url) { (data, response, error) in
             if let error = error {
                 completion(.failure(error))
@@ -102,7 +103,7 @@ class URLSessionHTTPClientTests: XCTestCase {
 
     //MARK: - Helpers
 
-    private func makeSUT(file: StaticString = #file, line: UInt = #line) -> URLSessionHTTPClient {
+    private func makeSUT(file: StaticString = #file, line: UInt = #line) -> HTTPClient {
         let sut = URLSessionHTTPClient()
         trackForMemoryLeaks(sut, file: file, line: line)
         return sut
@@ -112,7 +113,7 @@ class URLSessionHTTPClientTests: XCTestCase {
         let result = resultFor(data: data, response: response, error: error)
 
         switch result {
-        case let .success((receivedData, receivedResponse as HTTPURLResponse)):
+        case let .success((receivedData, receivedResponse)):
             return (receivedData, receivedResponse)
         default:
             XCTFail("expect success but received \(result)", file: file, line: line)
@@ -132,13 +133,13 @@ class URLSessionHTTPClientTests: XCTestCase {
         }
     }
 
-    private func resultFor(data: Data?, response: URLResponse?, error: Error?, file: StaticString = #file, line: UInt = #line) -> Result<(Data, URLResponse?), Error> {
+    private func resultFor(data: Data?, response: URLResponse?, error: Error?, file: StaticString = #file, line: UInt = #line) -> Result<(Data, HTTPURLResponse), Error> {
 
         URLProtocolStub.stub(data: data, response: response, error: error)
         let sut = makeSUT(file: file, line: line)
         let exp = expectation(description: "wait for completion")
 
-        var receivedResult: Result<(Data, URLResponse?), Error>!
+        var receivedResult: Result<(Data, HTTPURLResponse), Error>!
         sut.get(from: anyURL()) { (result) in
             receivedResult = result
             exp.fulfill()

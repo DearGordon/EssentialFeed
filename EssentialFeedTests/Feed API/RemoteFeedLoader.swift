@@ -8,7 +8,7 @@
 import XCTest
 import EssentialFeed
 
-typealias Message = (url: URL, completion: (Result<SuccessItem, Error>) -> Void)
+typealias Message = (url: URL, completion: (Result<(Data, HTTPURLResponse), Error>) -> Void)
 
 class RemoteFeedLoaderTest: XCTestCase {
 
@@ -175,7 +175,7 @@ class RemoteFeedLoaderTest: XCTestCase {
             return messages.map{ $0.url }
         }
 
-        func get(form url: URL, completion: @escaping ((Result<SuccessItem, Error>) -> Void)) {
+        func get(from url: URL, completion: @escaping ((Result<(Data, HTTPURLResponse), Error>) -> Void)) {
             messages.append((url, completion))
         }
 

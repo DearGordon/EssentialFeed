@@ -7,8 +7,6 @@
 
 import Foundation
 
-public typealias SuccessItem = (data: Data, response: HTTPURLResponse)
-
 public protocol HTTPClient {
-    func get(form url: URL, completion: @escaping ((Result<SuccessItem, Error>) -> Void))
+    func get(from url: URL, completion: @escaping ((Result<(Data, HTTPURLResponse), Error>) -> Void))
 }
