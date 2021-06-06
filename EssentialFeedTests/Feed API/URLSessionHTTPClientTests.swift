@@ -16,7 +16,7 @@ class URLSessionHTTPClient {
     }
 
     func get(from url: URL, completion: @escaping (Result<[FeedItem], Error>) -> Void) {
-
+//        let url = URL(string: "http://Wrong-url.com")!
         self.session.dataTask(with: url) { (data, response, error) in
             if let error = error {
                 completion(.failure(error))
@@ -26,6 +26,24 @@ class URLSessionHTTPClient {
 }
 
 class URLSessionHTTPClientTests: XCTestCase {
+
+    func test_getFromURL_performGETRequestWithURL() {
+        URLProtocolStub.startInterceptionRequest()
+
+        let exp = expectation(description: "wait for completion call back")
+        let url = URL(string: "www.a-url.com")!
+
+        URLProtocolStub.observeRequest { request in
+            XCTAssertEqual(request.url, url)
+            XCTAssertEqual(request.httpMethod, "GET")
+            exp.fulfill()
+        }
+
+        URLSessionHTTPClient().get(from: url, completion: { _ in })
+
+        wait(for: [exp], timeout: 1.0)
+        URLProtocolStub.stopInterceptingRequest()
+    }
 
     func test_getFromURL_FailsOnRequestError() {
         URLProtocolStub.startInterceptionRequest()
@@ -55,11 +73,16 @@ class URLSessionHTTPClientTests: XCTestCase {
 
     private class URLProtocolStub: URLProtocol {
         private static var stub: Stub?
+        private static var observeRequest: ((URLRequest) -> Void)?
 
         private struct Stub {
             let data:Data?
             let response: HTTPURLResponse?
             let error: Error?
+        }
+
+        static func observeRequest(_ completion: @escaping (URLRequest) -> Void) {
+            observeRequest = completion
         }
 
         static func stub(data: Data?, response: HTTPURLResponse?, error: Error?) {
@@ -73,9 +96,11 @@ class URLSessionHTTPClientTests: XCTestCase {
         static func stopInterceptingRequest() {
             URLProtocol.unregisterClass(URLProtocolStub.self)
             stub = nil
+            observeRequest = nil
         }
 
         override class func canInit(with request: URLRequest) -> Bool {
+            observeRequest?(request)
             return true
         }
 
