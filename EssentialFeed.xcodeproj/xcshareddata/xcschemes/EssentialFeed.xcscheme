@@ -29,32 +29,13 @@
       shouldUseLaunchSchemeArgsEnv = "YES">
       <Testables>
          <TestableReference
-            skipped = "NO">
+            skipped = "NO"
+            testExecutionOrdering = "random">
             <BuildableReference
                BuildableIdentifier = "primary"
                BlueprintIdentifier = "5485F3532661F82800AD4E26"
                BuildableName = "EssentialFeedTests.xctest"
                BlueprintName = "EssentialFeedTests"
-               ReferencedContainer = "container:EssentialFeed.xcodeproj">
-            </BuildableReference>
-         </TestableReference>
-         <TestableReference
-            skipped = "NO">
-            <BuildableReference
-               BuildableIdentifier = "primary"
-               BlueprintIdentifier = "5485F35E2661F82800AD4E26"
-               BuildableName = "EssentialFeedUITests.xctest"
-               BlueprintName = "EssentialFeedUITests"
-               ReferencedContainer = "container:EssentialFeed.xcodeproj">
-            </BuildableReference>
-         </TestableReference>
-         <TestableReference
-            skipped = "NO">
-            <BuildableReference
-               BuildableIdentifier = "primary"
-               BlueprintIdentifier = "5485F3772661F8FD00AD4E26"
-               BuildableName = "CI.xctest"
-               BlueprintName = "CI"
                ReferencedContainer = "container:EssentialFeed.xcodeproj">
             </BuildableReference>
          </TestableReference>
