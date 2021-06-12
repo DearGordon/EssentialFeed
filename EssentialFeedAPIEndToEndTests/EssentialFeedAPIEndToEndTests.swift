@@ -20,7 +20,7 @@ class EssentialFeedAPIEndToEndTests: XCTestCase {
             }
 
         case .failure(let receivedError):
-            XCTFail("expect successful feed result, but received \(receivedError) instead")
+            XCTFail("Expect successful feed result, but received \(receivedError) instead")
 
         case .none:
             XCTFail("Expect successful feed result, but got no result instead")
@@ -29,10 +29,13 @@ class EssentialFeedAPIEndToEndTests: XCTestCase {
 
     //MARK: - Helper
 
-    private func getFeedResult() -> (Result<[FeedItem],Error>)? {
+    private func getFeedResult(file: StaticString = #file, line: UInt = #line) -> (Result<[FeedItem],Error>)? {
         let url = URL(string: "https://essentialdeveloper.com/feed-case-study/test-api/feed")!
         let client = URLSessionHTTPClient()
         let loader = RemoteFeedLoader(url: url, client: client)
+
+        trackForMemoryLeaks(client, file: file, line: line)
+        trackForMemoryLeaks(loader, file: file, line: line)
 
         let exp = expectation(description: "wait for completion")
 
