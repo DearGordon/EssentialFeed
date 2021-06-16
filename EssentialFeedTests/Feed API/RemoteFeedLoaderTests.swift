@@ -10,7 +10,7 @@ import EssentialFeed
 
 typealias Message = (url: URL, completion: (Result<(Data, HTTPURLResponse), Error>) -> Void)
 
-class RemoteFeedLoaderTest: XCTestCase {
+class LoadFeedFromRemoteUseCaseTests: XCTestCase {
 
     func test_Init_DoesNotRequestDataFromURL() {
 
