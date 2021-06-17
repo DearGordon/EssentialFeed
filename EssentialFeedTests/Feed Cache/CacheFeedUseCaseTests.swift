@@ -11,15 +11,17 @@ import EssentialFeed
 class FeedLoader {
 
     private let store: FeedStore
+    private let currentDate: () -> Date
 
-    init(store: FeedStore) {
+    init(store: FeedStore, currentDate: @escaping () -> Date) {
         self.store = store
+        self.currentDate = currentDate
     }
 
     func save(_ items: [FeedItem]) {
         store.deleteCacheFeed { [unowned self] error in
             if error == nil {
-                self.store.insert(items)
+                self.store.insert(items, timestamp: self.currentDate())
             }
         }
     }
@@ -29,6 +31,7 @@ class FeedStore {
     typealias DeletionCompletion = (Error?) -> Void
     var deleteCachedFeedCallCount = 0
     var insertCallCount = 0
+    var inserts = [(items: [FeedItem], timestamp: Date)]()
 
     private var deletionCompletions = [DeletionCompletion]()
 
@@ -45,8 +48,9 @@ class FeedStore {
         deletionCompletions[index](nil)
     }
 
-    func insert(_ items: [FeedItem]) {
+    func insert(_ items: [FeedItem], timestamp: Date) {
         insertCallCount += 1
+        inserts.append((items, timestamp))
     }
 }
 
@@ -87,11 +91,24 @@ class CacheFeedUseCaseTests: XCTestCase {
         XCTAssertEqual(store.insertCallCount, 1)
     }
 
+    func test_save_requestCacheInsertionWithTimesStampOnSuccessfulDeletion() {
+        let timestamp = Date()
+        let items = [uniqueItem(), uniqueItem()]
+        let (sut, store) = makeSUT(currentDate: { timestamp })
+
+        sut.save(items)
+        store.completeSuccessfully()
+
+        XCTAssertEqual(store.insertCallCount, 1)
+        XCTAssertEqual(store.inserts.first?.items, items)
+        XCTAssertEqual(store.inserts.first?.timestamp, timestamp)
+    }
+
     //MARK: - HELPER
 
-    private func makeSUT(file: StaticString = #file, line: UInt = #line) -> (FeedLoader, FeedStore) {
+    private func makeSUT(currentDate: @escaping () -> Date = Date.init, file: StaticString = #file, line: UInt = #line) -> (FeedLoader, FeedStore) {
         let store = FeedStore()
-        let loader = FeedLoader(store: store)
+        let loader = FeedLoader(store: store, currentDate: currentDate)
         trackForMemoryLeaks(store, file: file, line: line)
         trackForMemoryLeaks(loader, file: file, line: line)
         return (loader, store)
