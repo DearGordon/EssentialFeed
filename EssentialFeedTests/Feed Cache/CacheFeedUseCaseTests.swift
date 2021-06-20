@@ -19,7 +19,9 @@ class FeedLoader {
     }
 
     func save(_ items: [FeedItem], completion: @escaping ((Error?) -> Void)) {
-        store.deleteCacheFeed { [unowned self] error in
+        store.deleteCacheFeed { [weak self] error in
+            guard let self = self else { return }
+
             if let error = error {
                 completion(error)
             } else  {
@@ -98,6 +100,19 @@ class CacheFeedUseCaseTests: XCTestCase {
             store.completeDeletionSuccessfully()
             store.completionInsertionSuccessfully()
         }
+    }
+
+    func test_save_doesNotDeliverDeletionErrorAfterSUTInstanceHasBeenDeallocated() {
+        let store = FeedStoreSpy()
+        var sut: FeedLoader? = FeedLoader(store: store, currentDate: Date.init)
+
+        var receivedError = [Error?]()
+        sut?.save([uniqueItem()], completion: { receivedError.append($0) })
+
+        sut = nil
+        store.completeDeletion(with: anyError())
+
+        XCTAssertTrue(receivedError.isEmpty)
     }
 
     //MARK: - HELPER
