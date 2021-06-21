@@ -11,6 +11,7 @@ public final class LocalFeedLoader {
 
     private let store: FeedStore
     private let currentDate: () -> Date
+    private let calendar = Calendar(identifier: .gregorian)
 
     public typealias SaveResult = Error?
     public typealias LoadResult = Result<[FeedImage], Error>
@@ -47,8 +48,11 @@ public final class LocalFeedLoader {
         }
     }
 
+    private var maxCacheAgeInDays: Int {
+         return 7
+    }
+
     private func validDate(_ timestamp: Date) -> Bool {
-        let calendar = Calendar(identifier: .gregorian)
         guard let maxCacheAge = calendar.date(byAdding: .day, value: 7, to: timestamp) else {
             return false
         }
