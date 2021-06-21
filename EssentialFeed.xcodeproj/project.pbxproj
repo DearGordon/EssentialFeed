@@ -9,7 +9,6 @@
 /* Begin PBXBuildFile section */
 		540D826F267B928D005C9BB1 /* CacheFeedUseCaseTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 540D826E267B928D005C9BB1 /* CacheFeedUseCaseTests.swift */; };
 		540D82D5267EE99B005C9BB1 /* LocalFeedLoader.swift in Sources */ = {isa = PBXBuildFile; fileRef = 540D82D4267EE99B005C9BB1 /* LocalFeedLoader.swift */; };
-		540D82DD267EEA57005C9BB1 /* FeedStore.swift in Sources */ = {isa = PBXBuildFile; fileRef = 540D82DC267EEA57005C9BB1 /* FeedStore.swift */; };
 		540D82E5267F2F61005C9BB1 /* RemoteFeedItem.swift in Sources */ = {isa = PBXBuildFile; fileRef = 540D82E4267F2F61005C9BB1 /* RemoteFeedItem.swift */; };
 		540D8305267F30B8005C9BB1 /* LocalFeedImage.swift in Sources */ = {isa = PBXBuildFile; fileRef = 540D82EA267F2FB5005C9BB1 /* LocalFeedImage.swift */; };
 		540D8319267F3158005C9BB1 /* FeedImage.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5485F38A2661F9F800AD4E26 /* FeedImage.swift */; };
@@ -29,6 +28,7 @@
 		5485F3D62663B62000AD4E26 /* HTTPClient.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5485F3D52663B62000AD4E26 /* HTTPClient.swift */; };
 		5485F3DA2663B69500AD4E26 /* FeedItemsMapper.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5485F3D92663B69500AD4E26 /* FeedItemsMapper.swift */; };
 		5494D7BB267481A800F39E78 /* EssentialFeedAPIEndToEndTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5494D7BA267481A800F39E78 /* EssentialFeedAPIEndToEndTests.swift */; };
+		54ADCB662680D52000C560FE /* FeedStore.swift in Sources */ = {isa = PBXBuildFile; fileRef = 540D82DC267EEA57005C9BB1 /* FeedStore.swift */; };
 		54B20E3A2669FFD7003E5F0F /* URLSessionHTTPClientTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 54B20E392669FFD7003E5F0F /* URLSessionHTTPClientTests.swift */; };
 		54FF5AF0267F8467003C6587 /* FeedStoreSpy.swift in Sources */ = {isa = PBXBuildFile; fileRef = 54FF5AEF267F8467003C6587 /* FeedStoreSpy.swift */; };
 /* End PBXBuildFile section */
@@ -361,8 +361,8 @@
 			buildActionMask = 2147483647;
 			files = (
 				540D8305267F30B8005C9BB1 /* LocalFeedImage.swift in Sources */,
-				540D82DD267EEA57005C9BB1 /* FeedStore.swift in Sources */,
 				540D82E5267F2F61005C9BB1 /* RemoteFeedItem.swift in Sources */,
+				54ADCB662680D52000C560FE /* FeedStore.swift in Sources */,
 				5485F3462661F82600AD4E26 /* ViewController.swift in Sources */,
 				5485F3422661F82600AD4E26 /* AppDelegate.swift in Sources */,
 				5485F3DA2663B69500AD4E26 /* FeedItemsMapper.swift in Sources */,
