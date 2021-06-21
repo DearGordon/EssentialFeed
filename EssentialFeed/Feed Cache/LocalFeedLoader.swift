@@ -40,6 +40,7 @@ public final class LocalFeedLoader {
                 completion(.success(feed.toModels()))
 
             case let .failure(error):
+                store.deleteCacheFeed(completion: { _ in })
                 completion(.failure(error))
 
             case .found, .empty:
