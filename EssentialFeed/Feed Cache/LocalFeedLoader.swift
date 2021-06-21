@@ -48,12 +48,10 @@ public final class LocalFeedLoader {
         }
     }
 
-    private var maxCacheAgeInDays: Int {
-         return 7
-    }
+    private let maxCacheAgeInDays: Int = 7
 
     private func validDate(_ timestamp: Date) -> Bool {
-        guard let maxCacheAge = calendar.date(byAdding: .day, value: 7, to: timestamp) else {
+        guard let maxCacheAge = calendar.date(byAdding: .day, value: maxCacheAgeInDays, to: timestamp) else {
             return false
         }
         return currentDate() < maxCacheAge
