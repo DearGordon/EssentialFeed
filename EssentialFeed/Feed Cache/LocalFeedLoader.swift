@@ -76,7 +76,7 @@ extension LocalFeedLoader: FeedLoader {
 
 extension LocalFeedLoader {
 
-    public func validateCache(completion: @escaping (LoadResult) -> Void) {
+    public func validateCache() {
         store.retrieve(completion: { [weak self] result in
             guard let self = self else { return }
 
