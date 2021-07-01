@@ -41,36 +41,36 @@ class LoadFeedFromCacheUseCaseTests: XCTestCase {
         })
     }
 
-    func test_load_deliversCachedImagesOnLessThanSevenDaysOldCache() {
+    func test_load_deliversCachedImagesOnNonExpiredCache() {
         let feed = uniqueImageFeed()
         let fixedCurrentDate = Date()
-        let lessThanSevenDaysOldTimestamp = fixedCurrentDate.adding(days: -7).adding(seconds: 1)
+        let NonExpiredTimestamp = fixedCurrentDate.minusFeedCacheMaxAge().adding(seconds: 1)
         let (sut, store) = makeSUT(currentDate: { fixedCurrentDate })
 
         expect(sut, toCompleteWith: .success(feed.model)) {
-            store.completeRetrieval(with: feed.localModel, timestamp: lessThanSevenDaysOldTimestamp)
+            store.completeRetrieval(with: feed.localModel, timestamp: NonExpiredTimestamp)
         }
     }
 
-    func test_load_deliverNoImagesOnSevenDaysOldCache() {
+    func test_load_deliverNoImagesOnCacheExpiration() {
         let feed = uniqueImageFeed()
         let fixedCurrentDate = Date()
-        let sevenDaysOldTimestamp = fixedCurrentDate.adding(days: -7)
+        let expirationTimestamp = fixedCurrentDate.minusFeedCacheMaxAge()
         let (sut, store) = makeSUT()
 
         expect(sut, toCompleteWith: .success([])) {
-            store.completeRetrieval(with: feed.localModel, timestamp: sevenDaysOldTimestamp)
+            store.completeRetrieval(with: feed.localModel, timestamp: expirationTimestamp)
         }
     }
 
-    func test_load_deliverNoImagesOnMoreThanSevenDaysOldCache() {
+    func test_load_deliverNoImagesOnExpiredCache() {
         let feed = uniqueImageFeed()
         let fixedCurrentDate = Date()
-        let moreThanSevenDaysOldTimestamp = fixedCurrentDate.adding(days: -7).adding(days: -1)
+        let expirationTimestamp = fixedCurrentDate.minusFeedCacheMaxAge().adding(days: -1)
         let (sut, store) = makeSUT()
 
         expect(sut, toCompleteWith: .success([])) {
-            store.completeRetrieval(with: feed.localModel, timestamp: moreThanSevenDaysOldTimestamp)
+            store.completeRetrieval(with: feed.localModel, timestamp: expirationTimestamp)
         }
     }
 
@@ -92,38 +92,38 @@ class LoadFeedFromCacheUseCaseTests: XCTestCase {
         XCTAssertEqual(store.receivedMessage, [.retrieve])
     }
 
-    func test_load_hasNoSideEffectOnLessThanSevenDaysOldCache() {
+    func test_load_hasNoSideEffectOnNonExpiredCache() {
         let (sut, store) = makeSUT()
         let feed = uniqueImageFeed()
         let fixedCurrentDate = Date()
-        let lessThenSevenDaysOldTimestamp = fixedCurrentDate.adding(days: -7).adding(days: 1)
+        let nonExpiredTimestamp = fixedCurrentDate.minusFeedCacheMaxAge().adding(days: 1)
 
         sut.load(completion: { _ in })
-        store.completeRetrieval(with: feed.localModel, timestamp: lessThenSevenDaysOldTimestamp)
+        store.completeRetrieval(with: feed.localModel, timestamp: nonExpiredTimestamp)
 
         XCTAssertEqual(store.receivedMessage, [.retrieve])
     }
 
-    func test_load_hasNoSideEffectOnSevenDaysOldCache() {
+    func test_load_hasNoSideEffectOnCacheExpiration() {
         let (sut, store) = makeSUT()
         let feed = uniqueImageFeed()
         let fixCurrentDate = Date()
-        let sevenDaysOldTimestamp = fixCurrentDate.adding(days: -7)
+        let expirationTimestamp = fixCurrentDate.minusFeedCacheMaxAge()
 
         sut.load(completion: { _ in })
-        store.completeRetrieval(with: feed.localModel, timestamp: sevenDaysOldTimestamp)
+        store.completeRetrieval(with: feed.localModel, timestamp: expirationTimestamp)
 
         XCTAssertEqual(store.receivedMessage, [.retrieve])
     }
 
-    func test_load_hasNoSideEffectOnMoreThanSevenDaysOldCache() {
+    func test_load_hasNoSideEffectOnExpiredCache() {
         let (sut, store) = makeSUT()
         let feed = uniqueImageFeed()
         let fixedCurrentDate = Date()
-        let moreThanSevenDaysOldTimestamp = fixedCurrentDate.adding(days: -7).adding(days: -1)
+        let expiredTimestamp = fixedCurrentDate.minusFeedCacheMaxAge().adding(days: -1)
 
         sut.load(completion: { _ in })
-        store.completeRetrieval(with: feed.localModel, timestamp: moreThanSevenDaysOldTimestamp)
+        store.completeRetrieval(with: feed.localModel, timestamp: expiredTimestamp)
 
         XCTAssertEqual(store.receivedMessage, [.retrieve])
     }
