@@ -96,7 +96,7 @@ class CodableFeedStoreTests: XCTestCase {
 
     func test_retrieve_deliverFoundValueOnNonEmptyCache() {
         let sut = makeSUT()
-        let feed = uniqueImageFeed().localModel
+        let feed = uniqueImageFeed().local
         let timestamp = Date()
 
         insert((feed, timestamp), to: sut)
@@ -106,7 +106,7 @@ class CodableFeedStoreTests: XCTestCase {
 
     func test_retrieve_hasNoSideEffectsOnNonEmptyCache() {
         let sut = makeSUT()
-        let feed = uniqueImageFeed().localModel
+        let feed = uniqueImageFeed().local
         let timestamp = Date()
 
         insert((feed, timestamp), to: sut)

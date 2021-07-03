@@ -41,7 +41,7 @@ class ValidateFeedCacheUseCaseTests: XCTestCase {
         let nonExpiredTimestamp = fixedCurrentDate.minusFeedCacheMaxAge().adding(seconds: 1)
 
         sut.validateCache()
-        store.completeRetrieval(with: feed.localModel, timestamp: nonExpiredTimestamp)
+        store.completeRetrieval(with: feed.local, timestamp: nonExpiredTimestamp)
 
         XCTAssertEqual(store.receivedMessage, [.retrieve])
     }
@@ -53,7 +53,7 @@ class ValidateFeedCacheUseCaseTests: XCTestCase {
         let expirationTimestamp = fixCurrentDate.minusFeedCacheMaxAge()
 
         sut.validateCache()
-        store.completeRetrieval(with: feed.localModel, timestamp: expirationTimestamp)
+        store.completeRetrieval(with: feed.local, timestamp: expirationTimestamp)
 
         XCTAssertEqual(store.receivedMessage, [.retrieve, .deleteCachedFeed])
     }
@@ -65,7 +65,7 @@ class ValidateFeedCacheUseCaseTests: XCTestCase {
         let expiredTimestamp = fixedCurrentDate.minusFeedCacheMaxAge().adding(seconds: -1)
 
         sut.validateCache()
-        store.completeRetrieval(with: feed.localModel, timestamp: expiredTimestamp)
+        store.completeRetrieval(with: feed.local, timestamp: expiredTimestamp)
 
         XCTAssertEqual(store.receivedMessage, [.retrieve, .deleteCachedFeed])
     }
