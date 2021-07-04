@@ -209,13 +209,13 @@ class CodableFeedStoreTests: XCTestCase {
 
     //MARK: - HELPER
 
-    private func makeSUT(storeURL: URL? = nil, file: StaticString = #file, line: UInt = #line) -> CodableFeedStore {
+    private func makeSUT(storeURL: URL? = nil, file: StaticString = #file, line: UInt = #line) -> FeedStore {
         let sut = CodableFeedStore(storeURL: storeURL ?? testSpecificStoreURL())
         trackForMemoryLeaks(sut, file: file, line: line)
         return sut
     }
 
-    private func deleteCache(from sut: CodableFeedStore) -> Error? {
+    private func deleteCache(from sut: FeedStore) -> Error? {
         let exp = expectation(description: "wait for completion")
 
         var retrievedError: Error?
@@ -229,7 +229,7 @@ class CodableFeedStoreTests: XCTestCase {
     }
 
     @discardableResult
-    private func insert(_ cache: (feed: [LocalFeedImage], timestamp: Date), to sut: CodableFeedStore) -> Error? {
+    private func insert(_ cache: (feed: [LocalFeedImage], timestamp: Date), to sut: FeedStore) -> Error? {
         let exp = expectation(description: "wait for completion")
 
         var insertionError: Error?
@@ -241,12 +241,12 @@ class CodableFeedStoreTests: XCTestCase {
         return insertionError
     }
 
-    private func expect(_ sut: CodableFeedStore, toRetrieveTwice expectResult: RetrieveCachedResult, file: StaticString = #file, line: UInt = #line) {
+    private func expect(_ sut: FeedStore, toRetrieveTwice expectResult: RetrieveCachedResult, file: StaticString = #file, line: UInt = #line) {
         expect(sut, toRetrieve: expectResult,file: file, line: line)
         expect(sut, toRetrieve: expectResult,file: file, line: line)
     }
 
-    private func expect(_ sut: CodableFeedStore, toRetrieve expectResult: RetrieveCachedResult, file: StaticString = #file, line: UInt = #line) {
+    private func expect(_ sut: FeedStore, toRetrieve expectResult: RetrieveCachedResult, file: StaticString = #file, line: UInt = #line) {
         let exp = expectation(description: "wait for completion")
 
         sut.retrieve { (retrievedResult) in
