@@ -12,5 +12,4 @@ internal struct RemoteFeedItem: Decodable {
     internal let description: String?
     internal let location: String?
     internal let image: URL
-
 }
