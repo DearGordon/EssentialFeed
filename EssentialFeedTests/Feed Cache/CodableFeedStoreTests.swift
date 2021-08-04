@@ -9,7 +9,7 @@ import XCTest
 import EssentialFeed
 
 class CodableFeedStoreTests: XCTestCase, FailableFeedStore {
-
+    
     override func setUp() {
         super.setUp()
 
@@ -34,7 +34,7 @@ class CodableFeedStoreTests: XCTestCase, FailableFeedStore {
         assertThatRetrieveHasNoSideEffectOnEmptyCache(on: sut)
     }
 
-    func test_retrieve_deliversFoundValueOnNonEmptyCache() {
+    func test_retrieve_deliversFoundValuesOnNonEmptyCache() {
         let sut = makeSUT()
 
         assertThatRetrieveDeliverFoundValuesOnNonEmptyCache(on: sut)
