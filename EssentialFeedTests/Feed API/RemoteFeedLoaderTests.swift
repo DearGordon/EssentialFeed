@@ -130,10 +130,7 @@ class LoadFeedFromRemoteUseCaseTests: XCTestCase {
                                     "description": description,
                                     "location": location,
                                     "image": imageURL.absoluteString
-        ].reduce(into: [String: Any]()) { (newDict, element) in
-            //if there is nil in value, we don't add the key of that value into json
-            if let value = element.value { newDict[element.key] = value }
-        }
+        ].compactMapValues { $0 }
 
         return (item, json)
     }
