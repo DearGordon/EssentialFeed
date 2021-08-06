@@ -47,7 +47,7 @@ class LoadFeedFromCacheUseCaseTests: XCTestCase {
         let NonExpiredTimestamp = fixedCurrentDate.minusFeedCacheMaxAge().adding(seconds: 1)
         let (sut, store) = makeSUT(currentDate: { fixedCurrentDate })
 
-        expect(sut, toCompleteWith: .success(feed.model)) {
+        expect(sut, toCompleteWith: .success(feed.models)) {
             store.completeRetrieval(with: feed.local, timestamp: NonExpiredTimestamp)
         }
     }
