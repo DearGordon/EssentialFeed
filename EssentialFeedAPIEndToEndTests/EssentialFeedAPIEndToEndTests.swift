@@ -12,11 +12,11 @@ class EssentialFeedAPIEndToEndTests: XCTestCase {
 
     func test_endToEndTest_ServerGETFeedResult_matchedFixedTestAccountData() {
         switch getFeedResult() {
-        case .success(let item):
-            XCTAssertEqual(item.count, 8, "Expected 8 item in the test account feed")
+        case .success(let imageFeed):
+            XCTAssertEqual(imageFeed.count, 8, "Expected 8 images in the test account image feed")
 
-            item.enumerated().forEach { (index, feedItem) in
-                XCTAssertEqual(feedItem, expectItem(at: index), "not match item at index: \(index)")
+            imageFeed.enumerated().forEach { (index, feedItem) in
+                XCTAssertEqual(feedItem, expectImage(at: index), "not match item at index: \(index)")
             }
 
         case .failure(let receivedError):
@@ -29,7 +29,7 @@ class EssentialFeedAPIEndToEndTests: XCTestCase {
 
     //MARK: - Helper
 
-    private func getFeedResult(file: StaticString = #file, line: UInt = #line) -> (Result<[FeedItem],Error>)? {
+    private func getFeedResult(file: StaticString = #file, line: UInt = #line) -> (Result<[FeedImage],Error>)? {
         let url = URL(string: "https://essentialdeveloper.com/feed-case-study/test-api/feed")!
         let client = URLSessionHTTPClient(session: URLSession(configuration: .ephemeral))
         let loader = RemoteFeedLoader(url: url, client: client)
@@ -39,7 +39,7 @@ class EssentialFeedAPIEndToEndTests: XCTestCase {
 
         let exp = expectation(description: "wait for completion")
 
-        var receivedResult: (Result<[FeedItem],Error>)?
+        var receivedResult: (Result<[FeedImage],Error>)?
         loader.load { (result) in
             receivedResult = result
             exp.fulfill()
@@ -48,11 +48,11 @@ class EssentialFeedAPIEndToEndTests: XCTestCase {
         return receivedResult
     }
 
-    private func expectItem(at index: Int) -> FeedItem {
-        return FeedItem(id: id(at: index),
+    private func expectImage(at index: Int) -> FeedImage {
+        return FeedImage(id: id(at: index),
                         description: description(at: index),
                         location: location(at: index),
-                        imageURL: image(at: index))
+                        url: image(at: index))
     }
 
     private func id(at index: Int) -> UUID {

@@ -92,7 +92,7 @@ class LoadFeedFromRemoteUseCaseTests: XCTestCase {
         let client = HTTPClientSpy()
         var loader: RemoteFeedLoader? = RemoteFeedLoader(url: url, client: client)
 
-        var captureResults:[Result<[FeedItem], Error>] = []
+        var captureResults:[Result<[FeedImage], Error>] = []
         loader?.load(completion: { captureResults.append($0) })
 
         loader = nil
@@ -112,19 +112,19 @@ class LoadFeedFromRemoteUseCaseTests: XCTestCase {
         return (loader, client)
     }
 
-    private func failure(_ error: RemoteFeedLoader.Error) -> Result<[FeedItem], Error> {
+    private func failure(_ error: RemoteFeedLoader.Error) -> Result<[FeedImage], Error> {
         return .failure(error)
     }
 
     private func makeItem(id: UUID,
                           description: String? = nil,
                           location: String? = nil,
-                          imageURL: URL) -> (model: FeedItem, json: [String: Any]) {
+                          imageURL: URL) -> (model: FeedImage, json: [String: Any]) {
 
-        let item = FeedItem(id: id,
+        let item = FeedImage(id: id,
                             description: description,
                             location: location,
-                            imageURL: imageURL)
+                            url: imageURL)
 
         let json: [String : Any] = ["id": id.uuidString,
                                     "description": description,
@@ -144,7 +144,7 @@ class LoadFeedFromRemoteUseCaseTests: XCTestCase {
     }
 
     private func expect(_ loader: RemoteFeedLoader,
-                        toCompleteWithResult expectResult: Result<[FeedItem], Error>,
+                        toCompleteWithResult expectResult: Result<[FeedImage], Error>,
                         when action: () -> Void,
                         file: StaticString = #filePath,
                         line: UInt = #line) {
